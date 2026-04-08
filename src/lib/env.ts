@@ -18,6 +18,12 @@ const schema = z.object({
   AI_PROVIDER: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_MODEL: z.string().optional(),
+
+  // 可选：内置账号（用于一键初始化）
+  BOOTSTRAP_TOKEN: z.string().optional(),
+  BOOTSTRAP_EMAIL: z.string().email().optional(),
+  BOOTSTRAP_USERNAME: z.string().min(2).max(50).optional(),
+  BOOTSTRAP_PASSWORD: z.string().min(8).max(100).optional(),
 });
 
 export type Env = z.infer<typeof schema>;
@@ -37,4 +43,3 @@ export function getEnv(): Env {
   cached = parsed.data;
   return cached;
 }
-
