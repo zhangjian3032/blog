@@ -5,8 +5,8 @@
 2) 启动依赖（需要 Docker Compose）：
    - `docker compose up -d postgres redis minio minio-init`
 3) 初始化 Prisma：
-   - `npx prisma generate`
-   - `npx prisma migrate dev`（或 `npx prisma db push`）
+   - `npm run prisma:generate`
+   - `npm run prisma:migrate`（或 `npm run prisma:push`）
 4) 启动 Web：
    - `npm run dev`
 5) 访问：
@@ -18,7 +18,7 @@
 2) 启动：
    - `docker compose up -d --build`
 3) 数据库迁移：
-   - 进入容器或在 CI 中运行 `npx prisma migrate deploy`
+   - 进入容器或在 CI 中运行 `npx prisma migrate deploy`（请确保使用项目本地 Prisma 版本：在仓库目录执行 `npx prisma -v`）
 
 ## 3. 关键配置说明
 - MinIO 桶：`photoblog`（`minio-init` 会自动创建并设置匿名下载，便于本地直接通过 URL 展示）
@@ -26,4 +26,3 @@
 
 ## 4. 健康检查
 - `GET /api/health`
-
