@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Visibility {
+  public
+  friends
+  private
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  avatarUrl    String?
+  theme        String   @default("light")
+  createdAt    DateTime @default(now())
+
+  posts Post[]
+}
+
+model Post {
+  id          String     @id @default(uuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String     @default("")
+  content     String     @default("")
+  coverPhotoId String?
+
+  locationLat Float?
+  locationLng Float?
+  moodTag     String?
+  visibility  Visibility @default(public)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  photos Photo[]
+
+  @@index([userId, createdAt])
+  @@index([publishedAt])
+}
+
+model Photo {
+  id            String   @id @default(uuid())
+  postId        String
+  post          Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  originalUrl   String
+  thumbSm       String
+  thumbMd       String
+  thumbLg       String
+  width         Int
+  height        Int
+
+  exifData      Json?
+  aiDescription String?
+  takenAt       DateTime?
+  sortOrder     Int      @default(0)
+
+  createdAt     DateTime @default(now())
+
+  @@index([postId, sortOrder])
+}
+
