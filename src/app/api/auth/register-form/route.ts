@@ -5,6 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { setSessionCookie } from "@/lib/auth";
+import { publicUrl } from "@/lib/public-url";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
     password: form.get("password")?.toString() ?? "",
   });
 
-  const redirectUrl = new URL("/register", req.url);
+  const redirectUrl = publicUrl(req, "/register");
   if (!parsed.success) {
     redirectUrl.searchParams.set("error", "参数不合法");
     return NextResponse.redirect(redirectUrl, 303);
@@ -43,6 +44,5 @@ export async function POST(req: Request) {
   });
   await setSessionCookie(user.id);
 
-  return NextResponse.redirect(new URL("/", req.url), 303);
+  return NextResponse.redirect(publicUrl(req, "/"), 303);
 }
-
